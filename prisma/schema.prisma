@@ -1,0 +1,61 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id          Int       @id @default(autoincrement())
+  firstName   String?
+  lastName    String?
+  photo       String?
+  phoneNumber String?
+  nationalId  String
+  role        String    @default("PATIENT")
+  dateOfBirth DateTime
+  email       String    @unique
+  password    String
+  Patient     Patient[]
+  Doctor      Doctor[]
+}
+
+model Patient {
+  id           Int           @id @default(autoincrement())
+  userId       Int
+  appointments Appointment[]
+  user         User          @relation(fields: [userId], references: [id])
+}
+
+model Doctor {
+  id               Int             @id @default(autoincrement())
+  address          String?
+  about            String?
+  fees             Float?
+  city             String?
+  userId           Int
+  appointments     Appointment[]
+  specialization   Specialization? @relation(fields: [specializationId], references: [id])
+  specializationId Int?
+  user             User            @relation(fields: [userId], references: [id])
+}
+
+model Appointment {
+  id        Int      @id @default(autoincrement())
+  patientId Int
+  doctorId  Int
+  date      DateTime
+  patient   Patient  @relation(fields: [patientId], references: [id])
+  doctor    Doctor   @relation(fields: [doctorId], references: [id])
+}
+
+model Specialization {
+  id      Int      @id @default(autoincrement())
+  name    String
+  doctors Doctor[]
+}
