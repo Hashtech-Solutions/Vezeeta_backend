@@ -1,4 +1,5 @@
 import express from 'express';
+import { DoctorCrud } from '../../models/doctorCrud.js';
 
 
 const server = express.Router();
