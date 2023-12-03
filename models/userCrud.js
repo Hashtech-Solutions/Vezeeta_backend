@@ -49,9 +49,7 @@ export class UserCrud {
                 id: Number(id),
             },
             data: {
-                name: body.name,
-                email: body.email,
-                password: body.password,
+                ...body,
             },
         });
     }

@@ -47,4 +47,26 @@ server.get('/specialization/:id', async (req, res, next) => {
     }
 });
 
+server.put('/edit/:id', async (req, res, next) => {
+    try {
+        const id = req.params.id;
+        const doctor = await DoctorCrud.update(id, req.body);
+        res.status(201).json(doctor);
+    } catch (error) {
+        console.log(error);
+        res.status(400).json({ message: error.message });
+    }
+});
+
+server.delete('/delete/:id', async (req, res, next) => {
+    try {
+        const id = req.params.id;
+        const doctor = await DoctorCrud.delete(id);
+        res.status(201).json(doctor);
+    } catch (error) {
+        console.log(error);
+        res.status(400).json({ message: error.message });
+    }
+});
+
 export default server;

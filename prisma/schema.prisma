@@ -45,6 +45,15 @@ model Doctor {
   user             User            @relation(fields: [userId], references: [id])
 }
 
+// model Clinic {
+//   id      Int      @id @default(autoincrement())
+//   address String
+//   workingHoursStart DateTime
+//   workingHoursEnd DateTime 
+//   doctors Doctor[]
+//   specializations Specialization[]
+// }
+
 model Appointment {
   id        Int      @id @default(autoincrement())
   patientId Int
