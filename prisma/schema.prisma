@@ -16,7 +16,7 @@ model User {
   lastName    String?
   photo       String?
   phoneNumber String?
-  nationalId  String
+  nationalId  Int?
   role        String    @default("PATIENT")
   dateOfBirth DateTime
   email       String    @unique
@@ -37,28 +37,32 @@ model Doctor {
   address          String?
   about            String?
   fees             Float?
-  city             String?
+  workplace        String?
   userId           Int
+  clinicId         Int?
+  clinic           Clinic?         @relation(fields: [clinicId], references: [id])
   appointments     Appointment[]
   specialization   Specialization? @relation(fields: [specializationId], references: [id])
   specializationId Int?
   user             User            @relation(fields: [userId], references: [id])
 }
 
-// model Clinic {
-//   id      Int      @id @default(autoincrement())
-//   address String
-//   workingHoursStart DateTime
-//   workingHoursEnd DateTime 
-//   doctors Doctor[]
-//   specializations Specialization[]
-// }
+model Clinic {
+  id                Int      @id @default(autoincrement())
+  address           String
+  workingHoursStart DateTime
+  workingHoursEnd   DateTime
+  bookingDuration   Float
+  doctors           Doctor[]
+}
 
 model Appointment {
   id        Int      @id @default(autoincrement())
   patientId Int
   doctorId  Int
-  date      DateTime
+  day       DateTime
+  startTime DateTime
+  endTime   DateTime
   patient   Patient  @relation(fields: [patientId], references: [id])
   doctor    Doctor   @relation(fields: [doctorId], references: [id])
 }

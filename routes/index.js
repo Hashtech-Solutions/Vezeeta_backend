@@ -3,6 +3,7 @@ import doctor from './api/doctorAuth.js';
 import user from './api/patientAuth.js';
 import specialization from './api/specialization.js';
 import login from './api/login.js';
+import book from './api/bookControl.js';
 
 const router = express.Router();
 
@@ -13,6 +14,7 @@ router.get('/xx', (req, res) => {
 router.use('/login', login);
 router.use('/doctor', doctor);
 router.use('/user', user);
+router.use('/book', book);
 router.use('/', specialization);
 
 export default router;
