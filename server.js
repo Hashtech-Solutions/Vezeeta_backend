@@ -2,7 +2,7 @@ import express from 'express';
 import routes from './routes/index.js';
 import cors from "cors";
 import path from "path";
-import { dirname, join } from 'path';
+import { dirname } from 'path';
 import { fileURLToPath } from 'url';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -13,8 +13,7 @@ const PORT = process.env.PORT || 3000;
 
 const corsOptions = {
     origin: true,
-    credentials: true,
-    // exposedHeaders: ["set-cookie"],
+    credentials: true
 };
 
 app.use(express.json());

@@ -16,7 +16,7 @@ model User {
   lastName    String?
   image       String?
   phoneNumber String?
-  nationalId  Int?
+  nationalId  String?   @unique
   role        String    @default("PATIENT")
   dateOfBirth DateTime
   email       String    @unique
