@@ -13,7 +13,7 @@
 // Function to generate time slots for the day
 export function getTimeSlots(time)
 {
-  console.log("xxtimecc", time)
+  // console.log("xxtimecc", time)
   let timeSlots = [];
   let currentTime = time.workingHoursStart;
 
@@ -77,7 +77,9 @@ export function getTimeSlots(time)
 
 export function getReservedSlots(reservationObject, day) {
   // Check if there are reservations for the given date
+  // console.log("reservationObject", JSON.stringify(reservationObject))
   const reservationsForDate = reservationObject.find(entry => entry.hasOwnProperty(day));
+  // console.log("reservationsForDate", reservationsForDate)
 
   // Return reservations for the date or an empty array if none found
   return reservationsForDate ? reservationsForDate[day] : [];
@@ -102,14 +104,14 @@ function padZero(num)
 // Function to mark a time slot as reserved
 function reserveTimeSlot(timeSlots, time)
 {
-  console.log("xxxtime", time)
-  console.log("xxxtimeSlots", JSON.stringify(timeSlots))
+  // console.log("xxxtime", time)
+  // console.log("xxxtimeSlots", JSON.stringify(timeSlots))
   // idx is the day in time object subtracted by the current day
-  let idx = new Date(time.day).getDay() - new Date().getDay();
+  let idx = (new Date(time.day).getDay() - new Date().getDay());
   // console.log("xxxxxx", timeSlots[1])
   // loop over the time slots inside the day that is passed in time
   for (const slot of timeSlots[idx][time.day]) {
-    console.log("slot", slot)
+    // console.log("slot", slot)
     if (!slot.isReserved) {  // Check only unreserved slots
       const slotStartMinutes = convertToMinutes(slot.startTime);
       const slotEndMinutes = convertToMinutes(slot.endTime);
@@ -234,7 +236,7 @@ export function getWeekCalender(reservations, time)
   // console.log(allTimeSlots)
   for (const day of allTimeSlots) {
     const dayDate = Object.keys(day)[0];
-    console.log("dayDate", dayDate)
+    // console.log("dayDate", dayDate)
     const reservedSlots = getReservedSlots(reservations, dayDate);
     // console.log("reserved", reservedSlots)
     // don't reserve it as it is already reserved, just mark it as reserved in the allTimeSlots array

@@ -7,10 +7,10 @@ const server = express.Router();
 // Create a new booking
 server.post("/", async (req, res, next) => {
     try {
-        const { day, start, end, ...rest } = req.body;
+        const { day, start, end, doctorId, ...rest } = req.body;
 
         // validate the body
-        const reserved = await bookingModel.readByDoctor(1);
+        const reserved = await bookingModel.readByDoctor(doctorId);
         console.log(reserved);
         let ans = isOverlapping(reserved, {
             day: day,
@@ -25,6 +25,7 @@ server.post("/", async (req, res, next) => {
             day: new Date(day),
             startTime: new Date(`${day}T${start}Z`),
             endTime: new Date(`${day}T${end}Z`),
+            doctorId: Number(doctorId),
             ...rest
         }
 
@@ -40,13 +41,13 @@ server.get("/availble_slots/:id", async (req, res, next) => {
     try {
         const id = req.params.id
         const booking = await bookingModel.readByDoctor(id);
-        // console.log(booking[0])
+        // console.log(booking)
         let time = {
             workingHoursStart: parseInt(booking[0].workingHoursStart) * 60,
             workingHoursEnd: parseInt(booking[0].workingHoursEnd) * 60,
             timeSlotDuration: parseInt(booking[0].bookingDuration) * 60
         }
-        console.log(time);
+        // console.log(time);
         const slots = getWeekCalender(booking, time);
         res.status(200).json(slots);        
     } catch (error) {

@@ -1,15 +1,15 @@
-GET http://localhost:8080/book/doctor/1
+GET http://localhost:8080/book/doctor/2
 ###
 
 POST http://localhost:8080/book
 Content-Type: application/json
 
 {
-    "doctorId": 1,
+    "doctorId": 2,
     "patientId": 1,
     "day": "2023-12-07",
-    "start": "10:00",
-    "end": "11:00"
+    "start": "07:00",
+    "end": "08:00"
 }
 
 ###
@@ -29,4 +29,4 @@ Content-Type: application/json
 
 ###
 
-GET http://localhost:8080/book/availble_slots/1
+GET http://localhost:8080/book/availble_slots/2

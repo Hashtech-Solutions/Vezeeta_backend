@@ -72,22 +72,32 @@ export class bookingModel {
                 workingHoursStart: data[0].doctor.workingHoursStart,
                 workingHoursEnd: data[0].doctor.workingHoursEnd,
                 bookingDuration: data[0].doctor.bookingDuration
-
-            })
+            });
+            
+            // Group reservations by date
+            const reservationsByDate = {};
             data.forEach(element => {
                 let date = element.day.toISOString().split('T')[0];
                 let time = element.startTime.toISOString().split('T')[1].split('.')[0];
                 let endTime = element.endTime.toISOString().split('T')[1].split('.')[0];
-                let obj = {
-                    [date]: [
-                        {
-                            // make time in this form "HH:MM"
-                            startTime: time.split(':')[0] + ':' + time.split(':')[1],
-                            endTime: endTime.split(':')[0] + ':' + time.split(':')[1],
-                            isReserved: true
-                        }
-                    ]
+                let reservation = {
+                    startTime: time.split(':')[0] + ':' + time.split(':')[1],
+                    endTime: endTime.split(':')[0] + ':' + time.split(':')[1],
+                    isReserved: true
+                };
+            
+                if (!reservationsByDate[date]) {
+                    reservationsByDate[date] = [];
                 }
+            
+                reservationsByDate[date].push(reservation);
+            });
+            
+            // Convert grouped reservations to the desired format
+            Object.entries(reservationsByDate).forEach(([date, reservations]) => {
+                let obj = {
+                    [date]: reservations
+                };
                 result.push(obj);
             });
             return result;
