@@ -1,18 +1,19 @@
-const time = {
-  workingHoursStart: 2 * 60,
-  workingHoursEnd: 14 * 60,
-  timeSlotDuration: 60
-}
+// const time = {
+//   workingHoursStart: 2 * 60,
+//   workingHoursEnd: 14 * 60,
+//   timeSlotDuration: 60
+// }
 
-const reservation = {
-  day: '2023-12-06',
-  startTime: "02:00",
-  endTime: "03:00"
-}
+// const reservation = {
+//   day: '2023-12-06',
+//   startTime: "02:00",
+//   endTime: "03:00"
+// }
 
 // Function to generate time slots for the day
-function getTimeSlots(time)
+export function getTimeSlots(time)
 {
+  console.log("xxtimecc", time)
   let timeSlots = [];
   let currentTime = time.workingHoursStart;
 
@@ -34,27 +35,49 @@ function getTimeSlots(time)
 
 // console.log(getTimeSlots(time))
 
-function getReservedSlots(day) {
-  // Query the database to get the slots reserved in that day
-  // For demonstration purposes, using a static array as the database
-  const reservations = [
-    {
-      '2023-12-07': [
-        { startTime: '02:00', endTime: '03:00', isReserved: true },
-        { startTime: '03:00', endTime: '04:00', isReserved: true },
-      ]
-    },
-    {
-      '2023-12-05': [
-        { startTime: '07:00', endTime: '08:00', isReserved: true },
-        { startTime: '08:00', endTime: '09:00', isReserved: true },
-      ]
-    }
-    // Add more entries as needed
-  ];
+// export function getReservedSlots(day) {
+//   // Query the database to get the slots reserved in that day
+//   // For demonstration purposes, using a static array as the database
+//   const reservations = [
+//     {
+//       "2023-12-07": [
+//         {
+//           "startTime": "10:00",
+//           "endTime": "11:00",
+//           "isReserved": true
+//         }
+//       ]
+//     },
+//     {
+//       "2023-12-08": [
+//         {
+//           "startTime": "10:00",
+//           "endTime": "11:00",
+//           "isReserved": true
+//         }
+//       ]
+//     },
+//     {
+//       "2023-12-07": [
+//         {
+//           "startTime": "08:00",
+//           "endTime": "09:00",
+//           "isReserved": true
+//         }
+//       ]
+//     }
+//   ]
 
+//   // Check if there are reservations for the given date
+//   const reservationsForDate = reservations.find(entry => entry.hasOwnProperty(day));
+
+//   // Return reservations for the date or an empty array if none found
+//   return reservationsForDate ? reservationsForDate[day] : [];
+// }
+
+export function getReservedSlots(reservationObject, day) {
   // Check if there are reservations for the given date
-  const reservationsForDate = reservations.find(entry => entry.hasOwnProperty(day));
+  const reservationsForDate = reservationObject.find(entry => entry.hasOwnProperty(day));
 
   // Return reservations for the date or an empty array if none found
   return reservationsForDate ? reservationsForDate[day] : [];
@@ -79,7 +102,8 @@ function padZero(num)
 // Function to mark a time slot as reserved
 function reserveTimeSlot(timeSlots, time)
 {
-  console.log("time", time)
+  console.log("xxxtime", time)
+  console.log("xxxtimeSlots", JSON.stringify(timeSlots))
   // idx is the day in time object subtracted by the current day
   let idx = new Date(time.day).getDay() - new Date().getDay();
   // console.log("xxxxxx", timeSlots[1])
@@ -121,29 +145,53 @@ function convertToMinutes(time)
 // Example usage
 // const allTimeSlots = generateTimeSlots();
 
-function isOverlapping(existingReservations, newReservation)
-{
+export function isOverlapping(existingReservations, newReservation) {
   const newStartTime = convertToMinutes(newReservation.startTime);
   const newEndTime = convertToMinutes(newReservation.endTime);
+  const newDay = newReservation.day;
 
-  for (const reservation of existingReservations) {
-    const existingStartTime = convertToMinutes(reservation.startTime);
-    const existingEndTime = convertToMinutes(reservation.endTime);
+  const workingHoursObject = existingReservations.find(item => item.hasOwnProperty('workingHoursStart'));
+  const workingHoursStart = workingHoursObject ? workingHoursObject.workingHoursStart : '00:00';
+  const workingHoursEnd = workingHoursObject ? workingHoursObject.workingHoursEnd : '23:59';
 
-    console.log(newStartTime, existingStartTime)
-    console.log(newEndTime, existingEndTime)
-    
-    // Check for any overlap
-    if (
-      (newStartTime >= existingStartTime && newStartTime < existingEndTime) ||
-      (newEndTime == existingStartTime && newEndTime == existingEndTime) ||
-      (newStartTime < existingStartTime && newEndTime > existingEndTime)
-    ) {
-      console.log("Overlapping")
-      return true; // Overlapping
-    }
+  // Check if the new reservation is outside of working hours
+  if (
+    newStartTime < convertToMinutes(workingHoursStart) ||
+    newEndTime > convertToMinutes(workingHoursEnd)
+  ) {
+    console.log("Outside of working hours");
+    return true; // Overlapping with non-working hours
   }
 
+  for (const dayReservations of existingReservations) {
+    const existingDay = Object.keys(dayReservations)[0];
+    const reservations = dayReservations[existingDay];
+    // console.log("existingDay", existingDay)
+    // console.log("reservations", reservations)
+
+    // Check if the reservation is for the same day
+    if (newDay === existingDay) {
+      // console.log("same day")
+      for (const reservation of reservations) {
+        const existingStartTime = convertToMinutes(reservation.startTime);
+        const existingEndTime = convertToMinutes(reservation.endTime);
+
+        // console.log("reservation", reservation)
+        // console.log("to be reserved",newStartTime,"original reserve", existingStartTime);
+        // console.log("to be ended", newEndTime, "original end", existingEndTime);
+
+        // Check for any overlap
+        if (
+          (newStartTime >= existingStartTime && newStartTime < existingEndTime) ||
+          (newEndTime > existingStartTime && newEndTime <= existingEndTime) ||
+          (newStartTime <= existingStartTime && newEndTime >= existingEndTime)
+        ) {
+          console.log("Overlapping");
+          return true; // Overlapping
+        }
+      }
+    }
+  }
   return false; // Not overlapping
 }
 
@@ -160,7 +208,7 @@ function getDayDate(day)
 
 // create function that generates time slots for the next 7 days
 
-function generateWeekTimeSlots()
+function generateWeekTimeSlots(time)
 {
   const allTimeSlots = [];
   for (let i = 0; i < 7; i++) {
@@ -180,15 +228,15 @@ function generateWeekTimeSlots()
 // should return an array of objects with the date as the key and the time slots as the value
 // the time slots should be the whole day time slots, reserved or not
 // the reserved time slots should be marked as reserved
-function getWeekCalender()
+export function getWeekCalender(reservations, time)
 {
-  const allTimeSlots = generateWeekTimeSlots();
+  const allTimeSlots = generateWeekTimeSlots(time);
   // console.log(allTimeSlots)
   for (const day of allTimeSlots) {
     const dayDate = Object.keys(day)[0];
     console.log("dayDate", dayDate)
-    const reservedSlots = getReservedSlots(dayDate);
-    console.log("reserved", reservedSlots)
+    const reservedSlots = getReservedSlots(reservations, dayDate);
+    // console.log("reserved", reservedSlots)
     // don't reserve it as it is already reserved, just mark it as reserved in the allTimeSlots array
     for (const slot of reservedSlots) {
       reserveTimeSlot(allTimeSlots, {...slot, day: dayDate});
@@ -199,7 +247,9 @@ function getWeekCalender()
 }
 
 
+// const reservationsForDate = reservations.find(entry => entry.hasOwnProperty(dayDate));
 
-let ans = getWeekCalender();
-for (let i = 0; i < 7; i++)
-  console.log(ans[i])
+//   return reservationsForDate ? reservationsForDate[day] : [];
+// let ans = getWeekCalender();
+// for (let i = 0; i < 7; i++)
+//   console.log(ans[i])

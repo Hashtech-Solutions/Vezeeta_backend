@@ -1,23 +1,23 @@
 import db from '../db.js'
+// import * from '../service/bookService.js'
 
 export class bookingModel {
     static async create(body) {
         try {
-            const { patient, doctor, date, ...rest } = body;
+            const { patientId, doctorId, ...rest } = body;
             // connect or create the specializations if not exists to the created doctor while creating the doctor
             return await db.Appointment.create({
                 data: {
                     patient: {
                         connect: {
-                            id: patient.id
+                            id: patientId
                         }
                     },
                     doctor: {
                         connect: {
-                            id: doctor.id
+                            id: doctorId
                         }
                     },
-                    day: new Date(date),
                     ...rest
 
                 },
@@ -45,6 +45,52 @@ export class bookingModel {
     // get all appointments for a specific doctor
     static async readByDoctor(id) {
         try {
+            let data =  await db.Appointment.findMany({
+                where: {
+                    doctorId: Number(id),
+                    // day: {
+                    //     gte: new Date().toISOString(),
+                    //     lte: new Date(new Date().setDate(new Date().getDate() + 7)).toISOString()
+                    // }
+                },
+                orderBy: {
+                    day: 'asc', // Order appointments by day in ascending order
+                },
+                include: {
+                    patient: {
+                        include: {
+                            user: true // Include user data for the patient
+                        }
+                    },
+                    doctor: true,
+                }
+            });
+            // console.log(data);
+
+            let result = [];
+            result.push({
+                workingHoursStart: data[0].doctor.workingHoursStart,
+                workingHoursEnd: data[0].doctor.workingHoursEnd,
+                bookingDuration: data[0].doctor.bookingDuration
+
+            })
+            data.forEach(element => {
+                let date = element.day.toISOString().split('T')[0];
+                let time = element.startTime.toISOString().split('T')[1].split('.')[0];
+                let endTime = element.endTime.toISOString().split('T')[1].split('.')[0];
+                let obj = {
+                    [date]: [
+                        {
+                            // make time in this form "HH:MM"
+                            startTime: time.split(':')[0] + ':' + time.split(':')[1],
+                            endTime: endTime.split(':')[0] + ':' + time.split(':')[1],
+                            isReserved: true
+                        }
+                    ]
+                }
+                result.push(obj);
+            });
+            return result;
             return await db.Appointment.findMany({
                 where: {
                     doctorId: Number(id)
@@ -60,6 +106,7 @@ export class bookingModel {
             });
         } catch (error) {
             console.log(error);
+            return error;
         }
     }
 

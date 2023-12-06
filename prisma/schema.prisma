@@ -33,27 +33,19 @@ model Patient {
 }
 
 model Doctor {
-  id               Int             @id @default(autoincrement())
-  address          String?
-  about            String?
-  fees             Float?
-  workplace        String?
-  userId           Int
-  clinicId         Int?
-  clinic           Clinic?         @relation(fields: [clinicId], references: [id])
-  appointments     Appointment[]
-  specialization   Specialization? @relation(fields: [specializationId], references: [id])
-  specializationId Int?
-  user             User            @relation(fields: [userId], references: [id])
-}
-
-model Clinic {
-  id                Int      @id @default(autoincrement())
-  address           String
-  workingHoursStart DateTime
-  workingHoursEnd   DateTime
-  bookingDuration   Float
-  doctors           Doctor[]
+  id                Int             @id @default(autoincrement())
+  address           String?
+  about             String?
+  fees              Float?
+  workplace         String?
+  workingHoursStart String?
+  workingHoursEnd   String?
+  bookingDuration   Float?
+  userId            Int
+  appointments      Appointment[]
+  specialization    Specialization? @relation(fields: [specializationId], references: [id])
+  specializationId  Int?
+  user              User            @relation(fields: [userId], references: [id])
 }
 
 model Appointment {

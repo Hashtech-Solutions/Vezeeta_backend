@@ -1,0 +1,32 @@
+GET http://localhost:8080/book/doctor/1
+###
+
+POST http://localhost:8080/book
+Content-Type: application/json
+
+{
+    "doctorId": 1,
+    "patientId": 1,
+    "day": "2023-12-07",
+    "start": "10:00",
+    "end": "11:00"
+}
+
+###
+
+GET http://localhost:8080/doctor/all
+
+###
+
+PUT http://localhost:8080/doctor/edit/1
+Content-Type: application/json
+
+{
+    "workingHoursStart": "06:00",
+    "workingHoursEnd": "09:00",
+    "bookingDuration": 1
+}
+
+###
+
+GET http://localhost:8080/book/availble_slots/1
