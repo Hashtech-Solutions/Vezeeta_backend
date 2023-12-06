@@ -81,6 +81,7 @@ export class bookingModel {
                 let time = element.startTime.toISOString().split('T')[1].split('.')[0];
                 let endTime = element.endTime.toISOString().split('T')[1].split('.')[0];
                 let reservation = {
+                    id: element.id,
                     startTime: time.split(':')[0] + ':' + time.split(':')[1],
                     endTime: endTime.split(':')[0] + ':' + time.split(':')[1],
                     isReserved: true
@@ -101,19 +102,6 @@ export class bookingModel {
                 result.push(obj);
             });
             return result;
-            return await db.Appointment.findMany({
-                where: {
-                    doctorId: Number(id)
-                },
-                include: {
-                    patient: {
-                        include: {
-                            user: true // Include user data for the patient
-                        }
-                    },
-                    doctor: true,
-                }
-            });
         } catch (error) {
             console.log(error);
             return error;
@@ -123,7 +111,7 @@ export class bookingModel {
     // get all appointments for a specific patient
     static async readByPatient(id) {
         try {
-            return await db.Appointment.findMany({
+            let data = await db.Appointment.findMany({
                 where: {
                     patientId: Number(id)
                 },
@@ -136,6 +124,34 @@ export class bookingModel {
                     doctor: true,
                 }
             });
+
+            let result = [];
+            // Group reservations by date
+            const reservationsByDate = {};
+            data.forEach(element => {
+                let date = element.day.toISOString().split('T')[0];
+                let time = element.startTime.toISOString().split('T')[1].split('.')[0];
+                let endTime = element.endTime.toISOString().split('T')[1].split('.')[0];
+                let reservation = {
+                    id: element.id,
+                    startTime: time.split(':')[0] + ':' + time.split(':')[1],
+                    endTime: endTime.split(':')[0] + ':' + time.split(':')[1],
+                    isReserved: true
+                };
+            
+                if (!reservationsByDate[date]) {
+                    reservationsByDate[date] = [];
+                }
+            
+                reservationsByDate[date].push(reservation);
+            });
+            Object.entries(reservationsByDate).forEach(([date, reservations]) => {
+                let obj = {
+                    [date]: reservations
+                };
+                result.push(obj);
+            });
+            return result;
         } catch (error) {
             console.log(error);
         }
@@ -176,17 +192,3 @@ export class bookingModel {
         });
     }
 }
-
-// await bookingModel.create({
-//     patient: {
-//         id: 1
-//     },
-//     doctor: {
-//         id: 1
-//     },
-//     day: new Date('2021-09-01T09:00Z'),
-//     startTime: new Date('2021-09-01T09:00Z'),
-//     endTime: new Date('2021-09-01T09:00Z'),
-// }).then(console.log).catch(console.log)
-
-// await bookingModel.delete(1).then(console.log).catch(console.log)

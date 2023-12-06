@@ -1,11 +1,20 @@
 import express from 'express';
+import upload from '../../middleware/imgUpload.js';
 import { DoctorCrud } from '../../models/doctorCrud.js';
+import { dirname, join } from 'path';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 
 const server = express.Router();
 
-server.post('/register', async (req, res, next) => {
+server.post('/register', upload.single('image'), async (req, res, next) => {
     try {
+        if (req.file) {
+            req.body.image = req.file.filename;
+        }
         const doctor = await DoctorCrud.create(req.body);
         res.status(201).json(doctor);
     } catch (error) {
@@ -47,7 +56,7 @@ server.get('/specialization/:id', async (req, res, next) => {
     }
 });
 
-server.put('/edit/:id', async (req, res, next) => {
+server.put('/:id', async (req, res, next) => {
     try {
         const id = req.params.id;
         const doctor = await DoctorCrud.update(id, req.body);
@@ -58,7 +67,7 @@ server.put('/edit/:id', async (req, res, next) => {
     }
 });
 
-server.delete('/delete/:id', async (req, res, next) => {
+server.delete('/:id', async (req, res, next) => {
     try {
         const id = req.params.id;
         const doctor = await DoctorCrud.delete(id);

@@ -104,4 +104,15 @@ server.get("/doctor/:id", async (req, res, next) => {
     }
 });
 
+server.delete("/:id", async (req, res, next) => {
+    try {
+        const id = req.params.id;
+        const booking = await bookingModel.delete(id);
+        res.status(200).json(booking);
+    } catch (error) {
+        console.log(error);
+        res.status(400).json({ message: error.message });
+    }
+});
+
 export default server;

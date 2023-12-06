@@ -3,8 +3,8 @@ import db from '../db.js'
 export class DoctorCrud {
     static async create(body) {
         try {
-            console.log(body);
-            const { firstName, lastName, phoneNumber, nationalId, dateOfBirth, email, password, specialization, ...rest } = body;
+            // console.log(body);
+            const { firstName, lastName, phoneNumber, nationalId, dateOfBirth, email, password, specializationId, image, ...rest } = body;
             // connect or create the specializations if not exists to the created doctor while creating the doctor
             return await db.Doctor.create({
                 data: {
@@ -13,17 +13,19 @@ export class DoctorCrud {
                             firstName,
                             lastName,
                             phoneNumber,
-                            nationalId,
+                            nationalId: parseInt(nationalId),
                             dateOfBirth: new Date(dateOfBirth),
                             email,
+                            image,
                             password,
                             role: 'DOCTOR'
                         }
                     },
                     specialization: {
                         connect: {
-                            id : specialization.id,
-                            name: specialization.name
+                            id: parseInt(specializationId)
+                            // id : specialization.id,
+                            // name: specialization.name
                         }
                     },
                     ...rest
@@ -51,7 +53,8 @@ export class DoctorCrud {
                             dateOfBirth: true,
                             email: true,
                             role: true,
-                            password: false
+                            password: false,
+                            image: true
                         }
                     },
                     specialization: true

@@ -1,15 +1,15 @@
-GET http://localhost:8080/book/doctor/2
+GET http://localhost:8080/book/doctor/1
 ###
 
 POST http://localhost:8080/book
 Content-Type: application/json
 
 {
-    "doctorId": 2,
+    "doctorId": 1,
     "patientId": 1,
-    "day": "2023-12-07",
-    "start": "07:00",
-    "end": "08:00"
+    "day": "2023-12-06",
+    "start": "06:00",
+    "end": "07:00"
 }
 
 ###
@@ -29,4 +29,21 @@ Content-Type: application/json
 
 ###
 
-GET http://localhost:8080/book/availble_slots/2
+GET http://localhost:8080/book/availble_slots/1
+
+###
+
+DELETE http://localhost:8080/book/3
+###
+
+GET http://localhost:8080/doctor/all
+###
+DELETE http://localhost:8080/doctor/8
+###
+# rafadoctor69191@zz.com
+PUT http://localhost:8080/doctor/1
+Content-Type: application/json
+
+{
+   "specializationId": NULL
+}

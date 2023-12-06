@@ -35,45 +35,6 @@ export function getTimeSlots(time)
 
 // console.log(getTimeSlots(time))
 
-// export function getReservedSlots(day) {
-//   // Query the database to get the slots reserved in that day
-//   // For demonstration purposes, using a static array as the database
-//   const reservations = [
-//     {
-//       "2023-12-07": [
-//         {
-//           "startTime": "10:00",
-//           "endTime": "11:00",
-//           "isReserved": true
-//         }
-//       ]
-//     },
-//     {
-//       "2023-12-08": [
-//         {
-//           "startTime": "10:00",
-//           "endTime": "11:00",
-//           "isReserved": true
-//         }
-//       ]
-//     },
-//     {
-//       "2023-12-07": [
-//         {
-//           "startTime": "08:00",
-//           "endTime": "09:00",
-//           "isReserved": true
-//         }
-//       ]
-//     }
-//   ]
-
-//   // Check if there are reservations for the given date
-//   const reservationsForDate = reservations.find(entry => entry.hasOwnProperty(day));
-
-//   // Return reservations for the date or an empty array if none found
-//   return reservationsForDate ? reservationsForDate[day] : [];
-// }
 
 export function getReservedSlots(reservationObject, day) {
   // Check if there are reservations for the given date
@@ -104,14 +65,10 @@ function padZero(num)
 // Function to mark a time slot as reserved
 function reserveTimeSlot(timeSlots, time)
 {
-  // console.log("xxxtime", time)
-  // console.log("xxxtimeSlots", JSON.stringify(timeSlots))
   // idx is the day in time object subtracted by the current day
   let idx = (new Date(time.day).getDay() - new Date().getDay());
-  // console.log("xxxxxx", timeSlots[1])
   // loop over the time slots inside the day that is passed in time
   for (const slot of timeSlots[idx][time.day]) {
-    // console.log("slot", slot)
     if (!slot.isReserved) {  // Check only unreserved slots
       const slotStartMinutes = convertToMinutes(slot.startTime);
       const slotEndMinutes = convertToMinutes(slot.endTime);
@@ -121,7 +78,6 @@ function reserveTimeSlot(timeSlots, time)
         throw new Error("Overlapping");
       }
 
-      // save the time slot to the db if not overlapping
       if (slotStartMinutes >= convertToMinutes(time.startTime) && slotEndMinutes <= convertToMinutes(time.endTime)) {
         slot.isReserved = true;
       }
@@ -129,23 +85,12 @@ function reserveTimeSlot(timeSlots, time)
   }
 }
 
-// let timeSlots = getTimeSlots(workingHoursStart, workingHoursEnd);
-// console.log("xxx", timeSlots)
-// reserveTimeSlot(timeSlots, convertToMinutes("05:00"), convertToMinutes("06:00"))
-// reserveTimeSlot(timeSlots, convertToMinutes("07:00"), convertToMinutes("08:00"))
-// reserveTimeSlot(timeSlots, convertToMinutes("05:00"), convertToMinutes("05:10"))
-// console.log(timeSlots)
-
-
 // Helper function to convert time to minutes for comparison
 function convertToMinutes(time)
 {
   const [hours, mins] = time.split(':').map(Number);
   return hours * 60 + mins;
 }
-
-// Example usage
-// const allTimeSlots = generateTimeSlots();
 
 export function isOverlapping(existingReservations, newReservation) {
   const newStartTime = convertToMinutes(newReservation.startTime);
@@ -204,12 +149,6 @@ function getDayDate(day)
   return dayDate.toISOString().split('T')[0];
 }
 
-// for (let i = 0; i < 7; i++) {
-//   console.log(getDayDate(i));
-// }
-
-// create function that generates time slots for the next 7 days
-
 function generateWeekTimeSlots(time)
 {
   const allTimeSlots = [];
@@ -226,10 +165,6 @@ function generateWeekTimeSlots(time)
   }
   return allTimeSlots;
 }
-
-// should return an array of objects with the date as the key and the time slots as the value
-// the time slots should be the whole day time slots, reserved or not
-// the reserved time slots should be marked as reserved
 export function getWeekCalender(reservations, time)
 {
   const allTimeSlots = generateWeekTimeSlots(time);
@@ -247,11 +182,3 @@ export function getWeekCalender(reservations, time)
 
   return allTimeSlots;
 }
-
-
-// const reservationsForDate = reservations.find(entry => entry.hasOwnProperty(dayDate));
-
-//   return reservationsForDate ? reservationsForDate[day] : [];
-// let ans = getWeekCalender();
-// for (let i = 0; i < 7; i++)
-//   console.log(ans[i])
