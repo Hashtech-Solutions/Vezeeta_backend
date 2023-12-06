@@ -13,7 +13,7 @@ export class DoctorCrud {
                             firstName,
                             lastName,
                             phoneNumber,
-                            nationalId: parseInt(nationalId),
+                            nationalId,
                             dateOfBirth: new Date(dateOfBirth),
                             email,
                             image,
