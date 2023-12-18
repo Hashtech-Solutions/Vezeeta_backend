@@ -43,7 +43,7 @@ export class bookingModel {
     }
 
     // get all appointments for a specific doctor
-    static async readByDoctor(id) {
+    static async readByDoctor(id, state) {
         try {
             let data =  await db.Appointment.findMany({
                 where: {
@@ -65,7 +65,13 @@ export class bookingModel {
                     doctor: true,
                 }
             });
+            if (state === 'all') {
+                return data;
+            }
             // console.log(data);
+            if (data.length === 0) {
+                return [];
+            }
 
             let result = [];
             result.push({
@@ -116,14 +122,16 @@ export class bookingModel {
                     patientId: Number(id)
                 },
                 include: {
-                    patient: {
+                    doctor:
+                    {
                         include: {
-                            user: true // Include user data for the patient
+                            user: true // Include user data for the doctor
                         }
-                    },
-                    doctor: true,
+                    }
                 }
             });
+            // console.log(data);
+            return data;
 
             let result = [];
             // Group reservations by date

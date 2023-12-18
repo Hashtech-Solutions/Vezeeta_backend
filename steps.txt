@@ -1,0 +1,10 @@
+install postgres
+create database vezeeta
+run the migrations `npx prisma migrate deploy`
+create user
+create doctor
+
+_____
+create working hours for doctors
+try booking a time
+get the available slots

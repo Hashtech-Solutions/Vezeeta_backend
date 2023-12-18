@@ -1,5 +1,6 @@
 import express from "express";
 import { bookingModel } from "../../models/bookModel.js";
+import { DoctorCrud } from "../../models/doctorCrud.js";
 import { isOverlapping, getWeekCalender }  from "../../services/bookService.js";
 
 const server = express.Router();
@@ -10,15 +11,19 @@ server.post("/", async (req, res, next) => {
         const { day, start, end, doctorId, ...rest } = req.body;
 
         // validate the body
-        const reserved = await bookingModel.readByDoctor(doctorId);
+        const reserved = await bookingModel.readByDoctor(doctorId, 'some');
+        console.log('here')
         console.log(reserved);
-        let ans = isOverlapping(reserved, {
-            day: day,
-            startTime: start,
-            endTime: end
-        })
-        if (ans) {
-            return res.status(400).json({ message: "Overlapping or outside working hours" });
+        if (reserved.length != 0) {
+            let ans = isOverlapping(reserved, {
+                day: day,
+                startTime: start,
+                endTime: end,
+                bookingDuration: reserved[0].bookingDuration,
+            })
+            if (ans) {
+                return res.status(400).json({ message: "Overlapping or outside working hours" });
+            }
         }
 
         let body = {
@@ -40,12 +45,14 @@ server.post("/", async (req, res, next) => {
 server.get("/availble_slots/:id", async (req, res, next) => {
     try {
         const id = req.params.id
-        const booking = await bookingModel.readByDoctor(id);
-        // console.log(booking)
+        const booking = await bookingModel.readByDoctor(id, 'one');
+        const doctorTimes = await DoctorCrud.readOne(id);
+        console.log('xx1', doctorTimes)
+        console.log('xx2', booking)
         let time = {
-            workingHoursStart: parseInt(booking[0].workingHoursStart) * 60,
-            workingHoursEnd: parseInt(booking[0].workingHoursEnd) * 60,
-            timeSlotDuration: parseInt(booking[0].bookingDuration) * 60
+            workingHoursStart: parseInt(doctorTimes.workingHoursStart) * 60,
+            workingHoursEnd: parseInt(doctorTimes.workingHoursEnd) * 60,
+            timeSlotDuration: parseInt(doctorTimes.bookingDuration) * 60
         }
         // console.log(time);
         const slots = getWeekCalender(booking, time);
@@ -96,7 +103,7 @@ server.get("/patient/:id", async (req, res, next) => {
 server.get("/doctor/:id", async (req, res, next) => {
     try {
         const id = req.params.id;
-        const booking = await bookingModel.readByDoctor(id);
+        const booking = await bookingModel.readByDoctor(id, 'all');
         res.status(200).json(booking);
     } catch (error) {
         console.log(error);

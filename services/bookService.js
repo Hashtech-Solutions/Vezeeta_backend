@@ -65,6 +65,9 @@ function padZero(num)
 // Function to mark a time slot as reserved
 function reserveTimeSlot(timeSlots, time)
 {
+  if (timeSlots.length == 0) {
+    return;
+  }
   // idx is the day in time object subtracted by the current day
   let idx = (new Date(time.day).getDay() - new Date().getDay());
   // loop over the time slots inside the day that is passed in time
@@ -97,9 +100,15 @@ export function isOverlapping(existingReservations, newReservation) {
   const newEndTime = convertToMinutes(newReservation.endTime);
   const newDay = newReservation.day;
 
+  // console.log("newRes11", newReservation)
+  // if existingReservations is empty, then there is no overlap
+  if (existingReservations.length == 0) {
+    return false;
+  }
+
   const workingHoursObject = existingReservations.find(item => item.hasOwnProperty('workingHoursStart'));
   const workingHoursStart = workingHoursObject ? workingHoursObject.workingHoursStart : '00:00';
-  const workingHoursEnd = workingHoursObject ? workingHoursObject.workingHoursEnd : '23:59';
+  const workingHoursEnd = workingHoursObject ? workingHoursObject.workingHoursEnd : '24:59';
 
   // Check if the new reservation is outside of working hours
   if (
