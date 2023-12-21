@@ -9,9 +9,10 @@ Content-Type: application/json
   "firstName": "james",
   "lastName": "adam",
   "phoneNumber": "01010931887",
-  "nationalId": "2321126322323113",
+  "nationalId": "232132232313",
   "dateOfBirth": "1997-07-16",
-  "email": "rafaezd619@aa.com",
+  "email": "rfaez19@aa.com",
+  "spec": "cardiology",
   "password": "xcdz"
 }
 
@@ -49,32 +50,31 @@ Content-Type: application/json
   "firstName": "james",
   "lastName": "adam",
   "phoneNumber": "01010931887",
-  "nationalId": "232322393213",
+  "nationalId": "921332393213",
   "dateOfBirth": "1997-07-16",
-  "email": "r2@z.com",
+  "email": "r6@z.com",
   "password": "xcdz"
 }
 
 ### update  | OK
-PUT http://localhost:8080/user/3
+PUT http://localhost:8080/user/12
 Content-Type: application/json
 
 {
   "firstName": "jamesxxx",
-  "lastName": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-  "phoneNumber": "0101887",
-  "dateOfBirth": "1997-07-16"
+  "lastName": "bbbbb",
+  "phoneNumber": "01018888888888888887"
 }
 
 ### delete | OK
-DELETE http://localhost:8080/user/4
+DELETE http://localhost:8080/user/12
 
 ### login
 POST http://localhost:8080/login
 Content-Type: application/json
 
 {
-  "email": "rafaed619@aa.com",
+  "email": "r6@z.com",
   "password": "xcdz"
 }
 

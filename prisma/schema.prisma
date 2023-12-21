@@ -38,6 +38,7 @@ model Doctor {
   about             String?
   fees              Float?
   workplace         String?
+  spec              String?
   // days              String?
   workingHoursStart String?
   workingHoursEnd   String?
