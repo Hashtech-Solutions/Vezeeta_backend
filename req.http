@@ -86,7 +86,7 @@ Content-Type: application/json
 GET http://localhost:8080/book/patient/2
 
 ### doctor reservations | OK
-GET http://localhost:8080/book/doctor/1
+GET http://localhost:8080/book/doctor/9
 
 ### book | OK
 
@@ -96,14 +96,14 @@ Content-Type: application/json
 {
   "doctorId": 9,
   "patientId": 2,
-  "day": "2023-12-22",
-  "start": "13:00",
-  "end": "14:00"
+  "day": "2023-12-21",
+  "start": "05:00",
+  "end": "05:15"
 }
 
 ### slots | OK
 
-GET http://localhost:8080/book/availble_slots/9
+GET http://localhost:8080/book/availble_slots/1
 
 ### delete | OK
-DELETE http://localhost:8080/book/10
+DELETE http://localhost:8080/book/18

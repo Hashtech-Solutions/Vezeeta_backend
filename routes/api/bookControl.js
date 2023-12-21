@@ -50,8 +50,8 @@ server.get("/availble_slots/:id", async (req, res, next) => {
         const doctorTimes = await DoctorCrud.readOne(id);
         // console.log("doctorTimes", doctorTimes)
         let time = {
-            workingHoursStart: parseInt(doctorTimes.workingHoursStart) * 60,
-            workingHoursEnd: parseInt(doctorTimes.workingHoursEnd) * 60,
+            workingHoursStart: parseFloat(doctorTimes.workingHoursStart) * 60,
+            workingHoursEnd: parseFloat(doctorTimes.workingHoursEnd) * 60,
             timeSlotDuration: parseFloat(doctorTimes.bookingDuration) * 60
         }
         // console.log("time", time);

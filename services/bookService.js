@@ -63,6 +63,7 @@ function padZero(num)
 }
 
 // Function to mark a time slot as reserved
+// Function to mark a time slot as reserved
 function reserveTimeSlot(timeSlots, time)
 {
   if (timeSlots.length == 0) {
@@ -75,13 +76,16 @@ function reserveTimeSlot(timeSlots, time)
     if (!slot.isReserved) {  // Check only unreserved slots
       const slotStartMinutes = convertToMinutes(slot.startTime);
       const slotEndMinutes = convertToMinutes(slot.endTime);
+      const bookingStartMinutes = convertToMinutes(time.startTime);
+      const bookingEndMinutes = convertToMinutes(time.endTime);
 
       const overlapping = isOverlapping(timeSlots, { startTime: slot.startTime, endTime: slot.endTime });
       if (overlapping) {
         throw new Error("Overlapping");
       }
 
-      if (slotStartMinutes >= convertToMinutes(time.startTime) && slotEndMinutes <= convertToMinutes(time.endTime)) {
+      // Check if the booking time falls within the slot
+      if (bookingStartMinutes >= slotStartMinutes && bookingEndMinutes <= slotEndMinutes) {
         slot.isReserved = true;
       }
     }
