@@ -9,9 +9,9 @@ Content-Type: application/json
   "firstName": "james",
   "lastName": "adam",
   "phoneNumber": "01010931887",
-  "nationalId": "2321232313",
+  "nationalId": "29212392313",
   "dateOfBirth": "1997-07-16",
-  "email": "rfaea19@aa.com",
+  "email": "z1@aa.com",
   "spec": "cardiology",
   "password": "xcdz"
 }
@@ -27,13 +27,13 @@ GET http://localhost:8080/doctor/one/2
 GET http://localhost:8080/doctor/specialization/1
 
 ### edit  | OK
-PUT http://localhost:8080/doctor/4
+PUT http://localhost:8080/doctor/9
 Content-Type: application/json
 
 {
   "workingHoursStart": "05:00",
   "workingHoursEnd": "23:00",
-  "bookingDuration": 1
+  "bookingDuration": 0.25
 }
 
 ### delete  | OK
@@ -94,7 +94,7 @@ POST http://localhost:8080/book
 Content-Type: application/json
 
 {
-  "doctorId": 7,
+  "doctorId": 9,
   "patientId": 2,
   "day": "2023-12-22",
   "start": "13:00",
@@ -103,7 +103,7 @@ Content-Type: application/json
 
 ### slots | OK
 
-GET http://localhost:8080/book/availble_slots/4
+GET http://localhost:8080/book/availble_slots/9
 
 ### delete | OK
 DELETE http://localhost:8080/book/10

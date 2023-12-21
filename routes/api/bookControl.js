@@ -52,7 +52,7 @@ server.get("/availble_slots/:id", async (req, res, next) => {
         let time = {
             workingHoursStart: parseInt(doctorTimes.workingHoursStart) * 60,
             workingHoursEnd: parseInt(doctorTimes.workingHoursEnd) * 60,
-            timeSlotDuration: parseInt(doctorTimes.bookingDuration) * 60
+            timeSlotDuration: parseFloat(doctorTimes.bookingDuration) * 60
         }
         // console.log("time", time);
         const slots = getWeekCalender(booking, time);
