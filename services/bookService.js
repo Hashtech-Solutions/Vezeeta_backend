@@ -72,21 +72,23 @@ function reserveTimeSlot(timeSlots, time)
   // idx is the day in time object subtracted by the current day
   let idx = (new Date(time.day).getDay() - new Date().getDay());
   // loop over the time slots inside the day that is passed in time
-  for (const slot of timeSlots[idx][time.day]) {
-    if (!slot.isReserved) {  // Check only unreserved slots
-      const slotStartMinutes = convertToMinutes(slot.startTime);
-      const slotEndMinutes = convertToMinutes(slot.endTime);
-      const bookingStartMinutes = convertToMinutes(time.startTime);
-      const bookingEndMinutes = convertToMinutes(time.endTime);
+  if (timeSlots[idx]) {
+    for (const slot of timeSlots[idx][time.day]) {
+      if (!slot.isReserved) {  // Check only unreserved slots
+        const slotStartMinutes = convertToMinutes(slot.startTime);
+        const slotEndMinutes = convertToMinutes(slot.endTime);
+        const bookingStartMinutes = convertToMinutes(time.startTime);
+        const bookingEndMinutes = convertToMinutes(time.endTime);
 
-      const overlapping = isOverlapping(timeSlots, { startTime: slot.startTime, endTime: slot.endTime });
-      if (overlapping) {
-        throw new Error("Overlapping");
-      }
+        const overlapping = isOverlapping(timeSlots, { startTime: slot.startTime, endTime: slot.endTime });
+        if (overlapping) {
+          throw new Error("Overlapping");
+        }
 
-      // Check if the booking time falls within the slot
-      if (bookingStartMinutes >= slotStartMinutes && bookingEndMinutes <= slotEndMinutes) {
-        slot.isReserved = true;
+        // Check if the booking time falls within the slot
+        if (bookingStartMinutes >= slotStartMinutes && bookingEndMinutes <= slotEndMinutes) {
+          slot.isReserved = true;
+        }
       }
     }
   }
