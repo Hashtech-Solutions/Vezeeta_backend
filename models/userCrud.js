@@ -64,9 +64,14 @@ export class UserCrud {
     }
 
     static async delete(id) {
-        return await db.Patient.delete({
+        const d = await db.Patient.delete({
             where: {
                 id: Number(id),
+            },
+        });
+        return await db.User.delete({
+            where: {
+                id: Number(d.userId),
             },
         });
     }
