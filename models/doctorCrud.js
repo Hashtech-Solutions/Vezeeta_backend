@@ -20,7 +20,7 @@ export class DoctorCrud {
     static async create(body) {
         
         // console.log(body);
-        const { firstName, lastName, phoneNumber, nationalId, dateOfBirth, email, password, specializationId, image, fees, ...rest } = body;
+        const { firstName, lastName, phoneNumber, nationalId, dateOfBirth, email, password, specializationId, image, fees, workingHoursStart, workingHoursEnd, bookingDuration, ...rest} = body;
         // connect or create the specializations if not exists to the created doctor while creating the doctor
         return await db.Doctor.create({
             data: {
@@ -44,6 +44,9 @@ export class DoctorCrud {
                 //         // name: specialization.name
                 //     }
                 // },
+                workingHoursStart: workingHoursStart ? parseInt(workingHoursStart) : '12:00',
+                workingHoursEnd: workingHoursEnd ? parseInt(workingHoursEnd) : '23:00',
+                bookingDuration: bookingDuration ? parseInt(bookingDuration) : 1,
                 fees: parseInt(fees),
                 ...rest
 

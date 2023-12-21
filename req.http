@@ -9,9 +9,9 @@ Content-Type: application/json
   "firstName": "james",
   "lastName": "adam",
   "phoneNumber": "01010931887",
-  "nationalId": "232132232313",
+  "nationalId": "2321232313",
   "dateOfBirth": "1997-07-16",
-  "email": "rfaez19@aa.com",
+  "email": "rfaea19@aa.com",
   "spec": "cardiology",
   "password": "xcdz"
 }
@@ -94,11 +94,11 @@ POST http://localhost:8080/book
 Content-Type: application/json
 
 {
-  "doctorId": 4,
+  "doctorId": 7,
   "patientId": 2,
-  "day": "2023-12-21",
-  "start": "08:00",
-  "end": "09:00"
+  "day": "2023-12-22",
+  "start": "13:00",
+  "end": "14:00"
 }
 
 ### slots | OK
