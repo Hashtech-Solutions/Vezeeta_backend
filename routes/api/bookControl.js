@@ -12,8 +12,8 @@ server.post("/", async (req, res, next) => {
 
         // validate the body
         const reserved = await bookingModel.readByDoctor(doctorId, 'some');
-        console.log('here')
-        console.log(reserved);
+        // console.log('here')
+        // console.log(reserved);
         if (reserved.length != 0) {
             let ans = isOverlapping(reserved, {
                 day: day,
@@ -46,15 +46,15 @@ server.get("/availble_slots/:id", async (req, res, next) => {
     try {
         const id = req.params.id
         const booking = await bookingModel.readByDoctor(id, 'one');
+        // console.log("booking", booking)
         const doctorTimes = await DoctorCrud.readOne(id);
-        console.log('xx1', doctorTimes)
-        console.log('xx2', booking)
+        // console.log("doctorTimes", doctorTimes)
         let time = {
             workingHoursStart: parseInt(doctorTimes.workingHoursStart) * 60,
             workingHoursEnd: parseInt(doctorTimes.workingHoursEnd) * 60,
             timeSlotDuration: parseInt(doctorTimes.bookingDuration) * 60
         }
-        // console.log(time);
+        // console.log("time", time);
         const slots = getWeekCalender(booking, time);
         res.status(200).json(slots);        
     } catch (error) {

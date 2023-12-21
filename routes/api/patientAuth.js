@@ -14,7 +14,7 @@ server.post('/register', async (req, res, next) => {
     }
 });
 
-server.put('/edit/:id', async (req, res, next) => {
+server.put('/:id', async (req, res, next) => {
     try {
         const id = req.params.id;
         const user = await UserCrud.update(id, req.body);
@@ -25,7 +25,7 @@ server.put('/edit/:id', async (req, res, next) => {
     }
 });
 
-server.delete('/delete/:id', async (req, res, next) => {
+server.delete('/:id', async (req, res, next) => {
     try {
         const id = req.params.id;
         const user = await UserCrud.delete(id);

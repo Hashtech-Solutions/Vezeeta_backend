@@ -45,7 +45,7 @@ export class bookingModel {
     // get all appointments for a specific doctor
     static async readByDoctor(id, state) {
         try {
-            let data =  await db.Appointment.findMany({
+            let d =  await db.Appointment.findMany({
                 where: {
                     doctorId: Number(id),
                     // day: {
@@ -59,12 +59,37 @@ export class bookingModel {
                 include: {
                     patient: {
                         include: {
-                            user: true // Include user data for the patient
+                            user: true // Include user d for the patient
                         }
                     },
-                    doctor: true,
+                    doctor: {
+                        include: {
+                            user: true
+                        }
+                    }
                 }
             });
+            for (let i = 0; i < d.length; i++) {
+                d[i].doctor.user.password = undefined;
+                d[i].doctor.user.id = undefined
+                d[i].patient.user.password = undefined;
+                d[i].patient.user.id = undefined
+            }
+
+            const data = d.map(appointment => ({
+                ...appointment,
+                patient: {
+                  ...appointment.patient,
+                  ...appointment.patient.user,
+                  user: undefined // Exclude the nested user property
+                },
+                doctor: {
+                  ...appointment.doctor,
+                  ...appointment.doctor.user,
+                  user: undefined // Exclude the nested user property
+                }
+            }));
+
             if (state === 'all') {
                 return data;
             }
@@ -107,6 +132,7 @@ export class bookingModel {
                 };
                 result.push(obj);
             });
+            
             return result;
         } catch (error) {
             console.log(error);
@@ -127,39 +153,38 @@ export class bookingModel {
                         include: {
                             user: true // Include user data for the doctor
                         }
+                    },
+                    patient:
+                    {
+                        include: {
+                            user: true
+                        }
                     }
                 }
             });
+            for (let i = 0; i < data.length; i++) {
+                data[i].doctor.user.password = undefined;
+                data[i].doctor.user.id = undefined
+                data[i].patient.user.password = undefined;
+                data[i].patient.user.id = undefined
+            }
             // console.log(data);
-            return data;
-
-            let result = [];
-            // Group reservations by date
-            const reservationsByDate = {};
-            data.forEach(element => {
-                let date = element.day.toISOString().split('T')[0];
-                let time = element.startTime.toISOString().split('T')[1].split('.')[0];
-                let endTime = element.endTime.toISOString().split('T')[1].split('.')[0];
-                let reservation = {
-                    id: element.id,
-                    startTime: time.split(':')[0] + ':' + time.split(':')[1],
-                    endTime: endTime.split(':')[0] + ':' + time.split(':')[1],
-                    isReserved: true
-                };
-            
-                if (!reservationsByDate[date]) {
-                    reservationsByDate[date] = [];
+            const flattenedAppointments = data.map(appointment => ({
+                ...appointment,
+                patient: {
+                    ...appointment.patient.user,
+                  ...appointment.patient,
+                  user: undefined, // Exclude the nested user property
+                  
+                },
+                doctor: {
+                    ...appointment.doctor.user,
+                    ...appointment.doctor,
+                  user: undefined // Exclude the nested user property
                 }
-            
-                reservationsByDate[date].push(reservation);
-            });
-            Object.entries(reservationsByDate).forEach(([date, reservations]) => {
-                let obj = {
-                    [date]: reservations
-                };
-                result.push(obj);
-            });
-            return result;
+            }));
+          
+            return flattenedAppointments;
         } catch (error) {
             console.log(error);
         }

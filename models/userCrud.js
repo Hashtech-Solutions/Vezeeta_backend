@@ -36,14 +36,31 @@ export class UserCrud {
     }
 
     static async update(id, body) {
-        return await db.user.update({
+        const { firstName, lastName, phoneNumber, nationalId, dateOfBirth, email, password, ...rest } = body;
+        const updatedPatient = await db.Patient.update({
             where: {
                 id: Number(id),
             },
             data: {
-                ...body,
+                ...rest,
             },
         });
+        const updatedUser = await db.User.update({
+            where: {
+                id: Number(updatedPatient.userId),
+            },
+            data: {
+                firstName,
+                lastName,
+                phoneNumber,
+                nationalId,
+                dateOfBirth: dateOfBirth ? new Date(dateOfBirth) : undefined,
+                email
+            },
+        });
+        delete updatedUser.password;
+        
+        return { ...updatedUser, ...updatedPatient };
     }
 
     static async delete(id) {

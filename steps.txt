@@ -8,3 +8,6 @@ _____
 create working hours for doctors
 try booking a time
 get the available slots
+
+
+// error when updating user in doctor

@@ -1,66 +1,109 @@
-GET http://localhost:8080/book/patient/1
-###
+###################################################################
+### DOCTOR
+
+### register | OK
+POST http://localhost:8080/doctor/register
+Content-Type: application/json
+
+{
+  "firstName": "james",
+  "lastName": "adam",
+  "phoneNumber": "01010931887",
+  "nationalId": "2321126322323113",
+  "dateOfBirth": "1997-07-16",
+  "email": "rafaezd619@aa.com",
+  "password": "xcdz"
+}
+
+### all doctors | OK
+GET http://localhost:8080/doctor/all
+
+### one | OK
+GET http://localhost:8080/doctor/one/2
+
+### get by specialization
+
+GET http://localhost:8080/doctor/specialization/1
+
+### edit  | OK
+PUT http://localhost:8080/doctor/4
+Content-Type: application/json
+
+{
+  "workingHoursStart": "05:00",
+  "workingHoursEnd": "23:00",
+  "bookingDuration": 1
+}
+
+### delete  | OK
+DELETE http://localhost:8080/doctor/3
+
+###########################################################################
+### PATIENT
+
+### register
+POST http://localhost:8080/user/register
+Content-Type: application/json
+
+{
+  "firstName": "james",
+  "lastName": "adam",
+  "phoneNumber": "01010931887",
+  "nationalId": "232322393213",
+  "dateOfBirth": "1997-07-16",
+  "email": "r2@z.com",
+  "password": "xcdz"
+}
+
+### update  | OK
+PUT http://localhost:8080/user/3
+Content-Type: application/json
+
+{
+  "firstName": "jamesxxx",
+  "lastName": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "phoneNumber": "0101887",
+  "dateOfBirth": "1997-07-16"
+}
+
+### delete | OK
+DELETE http://localhost:8080/user/4
+
+### login
+POST http://localhost:8080/login
+Content-Type: application/json
+
+{
+  "email": "rafaed619@aa.com",
+  "password": "xcdz"
+}
+
+###########################################################################
+
+### RESERVATIONS
+
+### patient reservations | OK
+GET http://localhost:8080/book/patient/2
+
+### doctor reservations | OK
+GET http://localhost:8080/book/doctor/1
+
+### book | OK
 
 POST http://localhost:8080/book
 Content-Type: application/json
 
 {
-    "doctorId": 1,
-    "patientId": 1,
-    "day": "2023-12-19",
-    "start": "18:00",
-    "end": "19:00"
+  "doctorId": 4,
+  "patientId": 2,
+  "day": "2023-12-21",
+  "start": "08:00",
+  "end": "09:00"
 }
 
-###
+### slots | OK
 
-GET http://localhost:8080/doctor/all
+GET http://localhost:8080/book/availble_slots/4
 
-###
-
-PUT http://localhost:8080/doctor/1
-Content-Type: application/json
-
-{
-  "workingHoursStart": "05:00",
-  "workingHoursEnd": "24:00",
-  "bookingDuration": 1
-}
-
-###
-
-GET http://localhost:8080/book/availble_slots/1
-
-###
-
-DELETE http://localhost:8080/book/3
-###
-
-GET http://localhost:8080/doctor/all
-###
-DELETE http://localhost:8080/doctor/11
-###
-# rafadoctor69191@zz.com
-PUT http://localhost:8080/doctor/13
-Content-Type: application/json
-
-{
-   "specializationId": 2
-}
-###
-POST http://localhost:8080/doctor/register
-Content-Type: application/json
-
-{
-  "address": "tezy",
-  "about": null,
-  "fees": 100,
-  "workplace": null,
-  "email": "x@z.com",
-  "password": "123456",
-  "workingHoursStart": "06:00",
-  "workingHoursEnd": "09:00",
-  "bookingDuration": 1,
-  "specializationId": 2,
-  "dateOfBirth": "2021-12-06"
-}
+### delete | OK
+DELETE http://localhost:8080/book/10

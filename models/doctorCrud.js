@@ -1,5 +1,21 @@
 import db from '../db.js'
 
+function flattenDoctors(doctors) {
+    return doctors.map((doctor) => ({
+        ...doctor,
+        ...doctor.user,
+        user: undefined, // Exclude the nested user property
+    }));
+}
+
+function flattenDoctor(doctor) {
+    return {
+        ...doctor,
+        ...doctor.user,
+        user: undefined, // Exclude the nested user property
+    };
+}
+
 export class DoctorCrud {
     static async create(body) {
         
@@ -37,7 +53,7 @@ export class DoctorCrud {
 
     static async readAll() {
         // return the doctor with the user and execlude the password from the user object
-        return await db.Doctor.findMany({
+        const doctors = await db.Doctor.findMany({
             include: {
                 user: {
                     select: {
@@ -55,11 +71,13 @@ export class DoctorCrud {
                 specialization: true
             }
         });
+
+        return flattenDoctors(doctors)
     }
 
     static async readOne(id) {
         // get the user and doctor information and execlude password from the user object
-        return await db.Doctor.findUnique({
+        const doctors = await db.Doctor.findUnique({
             where: {
                 id: Number(id),
             },
@@ -79,6 +97,8 @@ export class DoctorCrud {
                 }
             }
         });
+
+        return flattenDoctor(doctors)
     }
 
     static async readOneMail(email) {
@@ -132,14 +152,34 @@ export class DoctorCrud {
     }
 
     static async update(id, body) {
-        return await db.Doctor.update({
+        const { firstName, lastName, phoneNumber, nationalId, dateOfBirth, email, password, ...rest } = body;
+        console.log(body);
+        const updatedDoctor = await db.Doctor.update({
             where: {
                 id: Number(id),
             },
             data: {
-                ...body
+                ...rest
             },
         });
+        // console.log(updatedDoctor);
+
+        const updatedUser = await db.User.update({
+            where: {
+                id: Number(updatedDoctor.userId)
+            },
+            data: {
+                firstName,
+                lastName,
+                phoneNumber,
+                nationalId,
+                dateOfBirth: dateOfBirth ? new Date(dateOfBirth) : undefined,
+                email,
+                password
+            }
+        });
+        console.log(updatedUser);
+        return { ...updatedUser, ...updatedDoctor };
     }
 
     static async delete(id) {
