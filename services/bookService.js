@@ -64,26 +64,18 @@ function padZero(num)
 
 // Function to mark a time slot as reserved
 // Function to mark a time slot as reserved
-function reserveTimeSlot(timeSlots, time)
-{
-  if (timeSlots.length == 0) {
-    return;
-  }
-  // idx is the day in time object subtracted by the current day
-  let idx = (new Date(time.day).getDay() - new Date().getDay());
-  // loop over the time slots inside the day that is passed in time
-  if (timeSlots[idx]) {
-    for (const slot of timeSlots[idx][time.day]) {
+function reserveTimeSlot(timeSlots, time) {
+  // Find the correct day in the timeSlots array
+  const daySlots = timeSlots.find(daySlot => Object.keys(daySlot)[0] === time.day);
+
+  if (daySlots) {
+    const slots = Object.values(daySlots)[0];
+    for (const slot of slots) {
       if (!slot.isReserved) {  // Check only unreserved slots
         const slotStartMinutes = convertToMinutes(slot.startTime);
         const slotEndMinutes = convertToMinutes(slot.endTime);
         const bookingStartMinutes = convertToMinutes(time.startTime);
         const bookingEndMinutes = convertToMinutes(time.endTime);
-
-        const overlapping = isOverlapping(timeSlots, { startTime: slot.startTime, endTime: slot.endTime });
-        if (overlapping) {
-          throw new Error("Overlapping");
-        }
 
         // Check if the booking time falls within the slot
         if (bookingStartMinutes >= slotStartMinutes && bookingEndMinutes <= slotEndMinutes) {
