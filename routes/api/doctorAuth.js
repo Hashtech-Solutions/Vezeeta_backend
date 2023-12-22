@@ -1,6 +1,7 @@
 import express from 'express';
 import upload from '../../middleware/imgUpload.js';
 import { DoctorCrud } from '../../models/doctorCrud.js';
+import { bookingModel } from "../../models/bookModel.js";
 
 const server = express.Router();
 
@@ -53,6 +54,10 @@ server.get('/specialization/:id', async (req, res, next) => {
 server.put('/:id', async (req, res, next) => {
     try {
         const id = req.params.id;
+        const booking = await bookingModel.readByDoctor(id, 'one');
+        if (booking.length > 0 && req.body.bookingDuration) {
+            throw new Error('Doctor has bookings, can not update booking duration');
+        }
         const doctor = await DoctorCrud.update(id, req.body);
         res.status(201).json(doctor);
     } catch (error) {
