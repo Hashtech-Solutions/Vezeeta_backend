@@ -43,16 +43,15 @@ server.post('/', async (req, res, next) => {
                 { expiresIn: '1d' }
             );
             res.set('Authorization', token)
-            const patient = await UserCrud.readByPatient(user.id);
             res.status(200).json({
-                id: patient[0].id,
-                firstName: patient[0].user.firstName,
-                lastName: patient[0].user.lastName,
-                phoneNumber: patient[0].user.phoneNumber,
-                nationalId: patient[0].user.nationalId,
-                dateOfBirth: patient[0].user.dateOfBirth.toISOString().split('T')[0],
-                role: patient[0].user.role,
-                email: patient[0].user.email,
+                id: user.id,
+                firstName: user.firstName,
+                lastName: user.lastName,
+                phoneNumber: user.phoneNumber,
+                nationalId: user.nationalId,
+                dateOfBirth: user.dateOfBirth.toISOString().split('T')[0],
+                role: user.role,
+                email: user.email,
             });
         }
         
