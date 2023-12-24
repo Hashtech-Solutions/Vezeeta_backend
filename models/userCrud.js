@@ -35,6 +35,17 @@ export class UserCrud {
         });
     }
 
+    static async readByPatient(id) {
+        return await db.Patient.findMany({
+            where: {
+                userId: Number(id),
+            },
+            include: {
+                user: true,
+            },
+        });
+    }
+
     static async update(id, body) {
         const { firstName, lastName, phoneNumber, nationalId, dateOfBirth, email, password, ...rest } = body;
         const updatedPatient = await db.Patient.update({

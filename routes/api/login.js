@@ -2,7 +2,9 @@ import { DoctorCrud } from '../../models/doctorCrud.js';
 import { UserCrud } from '../../models/userCrud.js';
 import jwt from 'jsonwebtoken';
 import express from 'express';
+import dotenv from 'dotenv';
 
+dotenv.config();
 const server = express.Router();
 const SECRET = process.env.JWT_SECRET;
 
@@ -41,15 +43,16 @@ server.post('/', async (req, res, next) => {
                 { expiresIn: '1d' }
             );
             res.set('Authorization', token)
+            const patient = await UserCrud.readByPatient(user.id);
             res.status(200).json({
-                id: user.id,
-                firstName: user.firstName,
-                lastName: user.lastName,
-                phoneNumber: user.phoneNumber,
-                nationalId: user.nationalId,
-                dateOfBirth: user.dateOfBirth.toISOString().split('T')[0],
-                role: user.role,
-                email: user.email,
+                id: patient[0].id,
+                firstName: patient[0].user.firstName,
+                lastName: patient[0].user.lastName,
+                phoneNumber: patient[0].user.phoneNumber,
+                nationalId: patient[0].user.nationalId,
+                dateOfBirth: patient[0].user.dateOfBirth.toISOString().split('T')[0],
+                role: patient[0].user.role,
+                email: patient[0].user.email,
             });
         }
         
